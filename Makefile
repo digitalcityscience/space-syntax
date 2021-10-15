@@ -11,3 +11,6 @@ build:
 run:
 	python -m main
 
+clean:
+	rm -rf downloads/
+
