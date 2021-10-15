@@ -9,5 +9,5 @@ build:
 	pip install -r requirements.txt
 
 run:
-	python -m download
+	python -m main
 

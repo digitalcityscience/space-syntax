@@ -1,29 +1,5 @@
-import subprocess
-
-print("Transform dxf to shape file")
-dxfFile = "downloads/finland_municipalities.dxf"
-graphFile = "downloads/finland_municipalities.graph"
-transformer = subprocess.run(
-    [
-        "depthmapXcli",
-        "-m",
-        "IMPORT",
-        "-it",
-        "drawing",
-        "-f",
-        dxfFile,
-        "-o",
-        graphFile,
-    ],
-    universal_newlines=True,
-    capture_output=True,
-    check=True,
-)
-
-print("stdout:", transformer.stdout)
-print("stderr:", transformer.stderr)
-
 import asyncio
+from os import path
 
 
 async def run(cmd: str, description="Running command"):
@@ -41,45 +17,52 @@ async def run(cmd: str, description="Running command"):
         print(f"[stderr]\n{stderr.decode()}")
 
 
-async def axial():
-    axial_map_file = "downloads/axial-map.graph"
+async def axial(graph_file:str):
+    base_file, _ = path.splitext(graph_file)
+    axial_map_file = f"{base_file}-axial-map.graph"
     await run(
-        f"depthmapXcli -m MAPCONVERT -f {graphFile} -o {axial_map_file} -p -co axial -con axialMap",
+        f"depthmapXcli -m MAPCONVERT -f {graph_file} -o {axial_map_file} -p -co axial -con axialMap",
         "Converting to axial map",
     )
-    axial_analysis_file = "downloads/axial-analysis.graph"
+    axial_analysis_file = f"{base_file}-axial-analysis.graph"
     await run(
         f"depthmapXcli -m AXIAL -f {axial_map_file} -o {axial_analysis_file} -p -xa 3,n",
         "Performing axial analysis",
     )
-    axial_shapefile_mif = "downloads/shapegraph-map.axial.mif"
+    axial_shapefile_mif = f"{base_file}-shapegraph-map.axial.mif"
     await run(
         f"depthmapXcli -m EXPORT -f {axial_analysis_file} -o {axial_shapefile_mif} -em shapegraph-map-mif",
         "Exporting axial analysis to mif",
     )
+    return axial_shapefile_mif
 
 
-async def segment():
+async def segment(graph_file:str):
+    base_file, _ = path.splitext(graph_file)
     print("This operation may take longer than 25 minutes to complete!!!")
-    segment_map_file = "downloads/segment-map.graph"
+    segment_map_file = f"{base_file}-segment-map.graph"
     await run(
-        f"depthmapXcli -m MAPCONVERT -f {graphFile} -o {segment_map_file} -p -co segment -con segmentMap",
+        f"depthmapXcli -m MAPCONVERT -f {graph_file} -o {segment_map_file} -p -co segment -con segmentMap",
         "Converting to segment map",
     )
-    segment_analysis_file = "downloads/segment-analysis.graph"
+    segment_analysis_file = f"{base_file}-segment-analysis.graph"
     await run(
         f"depthmapXcli -m SEGMENT -f {segment_map_file} -o {segment_analysis_file} -p  -st metric -sr 200,400,1600",
         "Performing segment analysis",
     )
-    segment_shapefile_mif = "downloads/shapegraph-map.segment.mif"
+    segment_shapefile_mif = f"{base_file}-shapegraph-map.segment.mif"
     await run(
         f"depthmapXcli -m EXPORT -f {segment_analysis_file} -o {segment_shapefile_mif} -em shapegraph-map-mif",
         "Exporting segment analysis to mif",
     )
+    return segment_shapefile_mif
 
 
-async def main():
-    await asyncio.gather(axial(), segment())
-
-
-asyncio.run(main())
+async def analyse(dxfFile: str):
+    base_file, _ = path.splitext(dxfFile)
+    graph_file = base_file + ".graph"
+    await run(
+        f"depthmapXcli -m IMPORT -it drawing -f '{dxfFile}' -o '{graph_file}' ",
+        "Transform dxf to shape file",
+    )
+    return await asyncio.gather(axial(graph_file), segment(graph_file))
