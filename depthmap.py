@@ -19,6 +19,15 @@ def depthmapx_factory() -> DepthmapX:
             )
         chmod(executable, 0o775)
         return DepthmapX(executable)
+    elif sys.platform == "linux":
+        executable = "downloads/depthmapX"
+        if path.isfile(executable) is False:
+            urlretrieve(
+                "https://github.com/SpaceGroupUCL/depthmapX/releases/download/v0.8.0/depthmapXcli_linux64",
+                executable,
+            )
+        chmod(executable, 0o775)
+        return DepthmapX(executable)
 
     raise NotImplementedError()
 
@@ -38,7 +47,7 @@ async def run(cmd: str, description="Running command"):
         print(f"[stderr]\n{stderr.decode()}")
 
 
-async def axial(graph_file: str, depthmapx:DepthmapX):
+async def axial(graph_file: str, depthmapx: DepthmapX):
     base_file, _ = path.splitext(graph_file)
     axial_map_file = f"{base_file}-axial-map.graph"
     await run(
@@ -58,7 +67,7 @@ async def axial(graph_file: str, depthmapx:DepthmapX):
     return axial_shapefile_mif
 
 
-async def segment(graph_file: str, depthmapx:DepthmapX):
+async def segment(graph_file: str, depthmapx: DepthmapX):
     base_file, _ = path.splitext(graph_file)
     print("This operation may take longer than 25 minutes to complete!!!")
     segment_map_file = f"{base_file}-segment-map.graph"
@@ -87,4 +96,6 @@ async def analyse(dxfFile: str):
         f"{depthmapx.executable} -m IMPORT -it drawing -f '{dxfFile}' -o '{graph_file}' ",
         "Transform dxf to shape file",
     )
-    return await asyncio.gather(axial(graph_file, depthmapx), segment(graph_file, depthmapx))
+    return await asyncio.gather(
+        axial(graph_file, depthmapx), segment(graph_file, depthmapx)
+    )
