@@ -14,7 +14,7 @@ config(all_oneway=True, useful_tags_node=utn, useful_tags_way=utw)
 
 def download(place: str, operation_id = uuid.uuid4()) -> str:
     print(f"Downloading map for: {place} ...")
-    output_file = f"./downloads/{operation_id}.osm"
+    output_file = f"./downloads/{operation_id}/{operation_id}.osm"
     gph = graph.graph_from_place(place, network_type="drive")
     io.save_graph_shapefile(gph, filepath=output_file)
     return output_file

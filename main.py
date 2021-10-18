@@ -17,7 +17,7 @@ async def process(place: str) -> None:
     print("Exported axial files: ", out_axial)
     out_segment = mif_to_shp(segment_analysis)
     print("Exported segment files: ", out_segment)
-    print(f"Operation took {process_time() - start} minutes")
+    print(f"Operation took {process_time() - start} seconds")
 
 
 if __name__ == "__main__":
