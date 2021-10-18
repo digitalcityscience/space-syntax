@@ -4,10 +4,11 @@ from download import download
 from convert import mif_to_shp, osm_to_dxf
 import sys
 import asyncio
-from time import process_time
+from time import time
+
 
 async def process(place: str) -> None:
-    start = process_time() 
+    start = time()
     operation_id = uuid4()
     print(f"Starting operation {operation_id}")
     map = download(place, operation_id)
@@ -17,7 +18,7 @@ async def process(place: str) -> None:
     print("Exported axial files: ", out_axial)
     out_segment = mif_to_shp(segment_analysis)
     print("Exported segment files: ", out_segment)
-    print(f"Operation took {process_time() - start} seconds")
+    print(f"Operation took {time() - start} seconds")
 
 
 if __name__ == "__main__":
