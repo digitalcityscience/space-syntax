@@ -10,27 +10,22 @@ class DepthmapX(NamedTuple):
 
 
 def depthmapx_factory() -> DepthmapX:
-    if sys.platform == "darwin":
-        executable = "downloads/depthmapX"
-        if path.isfile(executable) is False:
+    executable = "downloads/depthmapX"
+    if path.isfile(executable) is False:
+        if sys.platform == "darwin":
             urlretrieve(
                 "https://github.com/SpaceGroupUCL/depthmapX/releases/download/v0.8.0/depthmapXcli_macos",
                 executable,
             )
-        chmod(executable, 0o775)
-        return DepthmapX(executable)
-    elif sys.platform == "linux":
-        executable = "downloads/depthmapX"
-        if path.isfile(executable) is False:
+        elif sys.platform == "linux":
             urlretrieve(
                 "https://github.com/SpaceGroupUCL/depthmapX/releases/download/v0.8.0/depthmapXcli_linux64",
                 executable,
             )
-        chmod(executable, 0o775)
-        return DepthmapX(executable)
-
-    raise NotImplementedError()
-
+        else:
+            raise NotImplementedError()
+    chmod(executable, 0o775)
+    return DepthmapX(executable)
 
 async def run(cmd: str, description="Running command"):
     print(description, cmd)

@@ -2,6 +2,7 @@
 .venv/
 .cache/
 downloads/
+workdir/
 cache/
 __pycache__/
 
