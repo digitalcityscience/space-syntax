@@ -9,7 +9,10 @@ build:
 	pip install -r requirements.txt
 
 build-docker:
-	docker build --no-cache --network=host -t dcs/space-syntax .
+	docker build --no-cache --network=host -t dcs/space-syntax:latest .
+
+rebuild-docker:
+	docker build --network=host -t dcs/space-syntax:latest .
 
 run:
 	python -m main
