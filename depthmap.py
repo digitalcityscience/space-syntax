@@ -1,8 +1,8 @@
 import asyncio
+import sys
+from os import chmod, path
 from typing import NamedTuple
 from urllib.request import urlretrieve
-from os import chmod, path
-import sys
 
 from convert import mif_to_shp
 
@@ -90,6 +90,11 @@ async def analyse(dxfFile: str):
     base_file, _ = path.splitext(dxfFile)
     graph_file = base_file + ".graph"
     depthmapx = depthmapx_factory()
+    await run(
+        f"{depthmapx.executable} -v ",
+        "Using depthmapX cli version:",
+    )
+
     await run(
         f"{depthmapx.executable} -m IMPORT -it drawing -f '{dxfFile}' -o '{graph_file}' ",
         "Transform dxf to shape file",
