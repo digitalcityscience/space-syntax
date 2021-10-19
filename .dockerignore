@@ -1,0 +1,6 @@
+# Ignore everything
+**
+
+# Allow python files and pip requirements
+!/requirements.txt
+!/*.py
