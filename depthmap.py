@@ -4,6 +4,8 @@ from urllib.request import urlretrieve
 from os import chmod, path
 import sys
 
+from convert import mif_to_shp
+
 
 class DepthmapX(NamedTuple):
     executable: str
@@ -26,6 +28,7 @@ def depthmapx_factory() -> DepthmapX:
             raise NotImplementedError()
     chmod(executable, 0o775)
     return DepthmapX(executable)
+
 
 async def run(cmd: str, description="Running command"):
     print(description, cmd)
@@ -54,12 +57,12 @@ async def axial(graph_file: str, depthmapx: DepthmapX):
         f"{depthmapx.executable} -m AXIAL -f {axial_map_file} -o {axial_analysis_file} -p -xa 3,n",
         "Performing axial analysis",
     )
-    axial_shapefile_mif = f"{base_file}-shapegraph-map.axial.mif"
+    axial_shapefile_mif = f"{base_file}.axial.mif"
     await run(
         f"{depthmapx.executable} -m EXPORT -f {axial_analysis_file} -o {axial_shapefile_mif} -em shapegraph-map-mif",
         "Exporting axial analysis to mif",
     )
-    return axial_shapefile_mif
+    return mif_to_shp(axial_shapefile_mif)
 
 
 async def segment(graph_file: str, depthmapx: DepthmapX):
@@ -75,12 +78,12 @@ async def segment(graph_file: str, depthmapx: DepthmapX):
         f"{depthmapx.executable} -m SEGMENT -f {segment_map_file} -o {segment_analysis_file} -p  -st tulip -sic -srt metric -stb 1024 -sr 200,400,1600,n",
         "Performing segment analysis",
     )
-    segment_shapefile_mif = f"{base_file}-shapegraph-map.segment.mif"
+    segment_shapefile_mif = f"{base_file}.segment.mif"
     await run(
         f"{depthmapx.executable} -m EXPORT -f {segment_analysis_file} -o {segment_shapefile_mif} -em shapegraph-map-mif",
         "Exporting segment analysis to mif",
     )
-    return segment_shapefile_mif
+    return mif_to_shp(segment_shapefile_mif)
 
 
 async def analyse(dxfFile: str):

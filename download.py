@@ -16,10 +16,10 @@ config(all_oneway=True, useful_tags_node=utn, useful_tags_way=utw)
 
 def download(place: str, operation_id=uuid.uuid4()) -> str:
     print(f"Downloading map for: {place} ...")
-    output_file = f"./downloads/{operation_id}/{operation_id}.osm"
+    output_file = f"./downloads/{operation_id}/osm"
     city = geocode_to_gdf(place)
     gph = graph.graph_from_place(place, network_type="drive")
     io.save_graph_shapefile(gph, filepath=output_file)
-    with open(f"./downloads/{operation_id}/{operation_id}.administrative.geojson", "w") as fp:
+    with open(f"./downloads/{operation_id}/administrative.geojson", "w") as fp:
         json.dump(json.loads(city.to_json()), fp)
     return output_file
