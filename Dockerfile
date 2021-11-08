@@ -2,10 +2,11 @@
 FROM alpine:3.12 AS depthmapX-builder
 WORKDIR /work
 ARG version=0.8.0
-ARG url="https://github.com/SpaceGroupUCL/depthmapX/archive/refs/tags/v${version}.tar.gz"
-ARG tarball="v${version}.tar.gz"
+ARG url="https://github.com/SpaceGroupUCL/depthmapX/archive/refs/heads/master.zip"
+ARG tarball="v${version}.zip"
 
 RUN apk --no-cache add \
+  unzip \
   bash \
   binutils \
   clang \
@@ -18,13 +19,15 @@ RUN apk --no-cache add \
   qt5-qtbase-dev \
   wget
 
-RUN wget ${url} && \
-  tar -xzf ${tarball} && \
-  cd depthmapX-${version} && \
+RUN wget ${url} -O ${tarball} && \
+  unzip ${tarball} -d depthmapX-${version}
+
+
+RUN cd depthmapX-${version}/depthmapX-master && \
   mkdir build && \
   cd build && \
   cmake .. && \
-  make -j && \
+  make -j depthmapXcli && \
   cp depthmapXcli/depthmapXcli /usr/local/bin/
 
 FROM python:3.9
