@@ -4,3 +4,5 @@
 # Allow python files and pip requirements
 !/requirements.txt
 !/*.py
+!/faasd/requirements.txt
+!/faasd/*.py

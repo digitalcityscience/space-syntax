@@ -4,7 +4,7 @@ from os import chmod, path
 from typing import NamedTuple
 from urllib.request import urlretrieve
 
-from convert import mif_to_shp
+from .convert import mif_to_shp
 
 
 class DepthmapX(NamedTuple):

@@ -11,6 +11,9 @@ build:
 build-docker:
 	docker build --no-cache --network=host -t dcs/space-syntax:latest .
 
+build-docker-faasd:
+	docker build  --no-cache --network=host -t digitalcityscience/space-syntax -f faasd/Dockerfile .
+
 rebuild-docker:
 	docker build --network=host -t dcs/space-syntax:latest .
 
