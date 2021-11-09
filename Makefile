@@ -1,3 +1,5 @@
+TAG=ghcr.io/digitalcityscience/space-syntax
+
 help:
 	@echo "for now, you are on your own"
 
@@ -9,19 +11,19 @@ build:
 	pip install -r requirements.txt
 
 build-docker:
-	docker build --no-cache --network=host -t dcs/space-syntax:latest .
+	docker build --network=host -t ${TAG}:latest .
 
 build-docker-faasd:
 	docker build  --no-cache --network=host -t digitalcityscience/space-syntax -f faasd/Dockerfile .
 
 rebuild-docker:
-	docker build --network=host -t dcs/space-syntax:latest .
+	docker build --network=host -t ${TAG}:latest .
 
 run:
 	python -m main
 
 run-docker: 
-	docker run -v "${PWD}"/workdir:/home/app/downloads -it dcs/space-syntax
+	docker run --rm -v "${PWD}"/workdir:/home/app/downloads ${TAG}
 
 clean:
 	rm -rf downloads/
