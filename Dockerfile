@@ -32,6 +32,8 @@ RUN cd depthmapX-${version}/depthmapX-master && \
 
 FROM python:3.9
 
+LABEL org.opencontainers.image.source https://github.com/digitalcityscience/space-syntax
+
 RUN apt update
 
 RUN useradd --create-home --shell /bin/bash app
