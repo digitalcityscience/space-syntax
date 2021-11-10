@@ -1,11 +1,11 @@
 # Builder-Worker based on https://github.com/p3palazzo/depthmapx-docker
-FROM alpine:3.12 AS depthmapX-builder
+FROM debian:bullseye-slim AS depthmapX-builder
 WORKDIR /work
 ARG version=0.8.0
 ARG url="https://github.com/SpaceGroupUCL/depthmapX/archive/refs/heads/master.zip"
 ARG tarball="v${version}.zip"
 
-RUN apk --no-cache add \
+RUN apt update && apt install -y \
   unzip \
   bash \
   binutils \
@@ -13,10 +13,9 @@ RUN apk --no-cache add \
   cmake \
   g++ \
   gcc \
-  glu-dev \
   make \
   musl-dev \
-  qt5-qtbase-dev \
+  qtbase5-dev \
   wget
 
 RUN wget ${url} -O ${tarball} && \
@@ -30,7 +29,7 @@ RUN cd depthmapX-${version}/depthmapX-master && \
   make -j depthmapXcli && \
   cp depthmapXcli/depthmapXcli /usr/local/bin/
 
-FROM python:3.9
+FROM python:3.9-slim-bullseye
 
 LABEL org.opencontainers.image.source https://github.com/digitalcityscience/space-syntax
 
