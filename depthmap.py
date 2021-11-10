@@ -1,10 +1,10 @@
 import asyncio
 import sys
-from os import chmod, path
+from os import chmod, path, getcwd
 from typing import NamedTuple
 from urllib.request import urlretrieve
 
-from .convert import mif_to_shp
+from convert import mif_to_shp
 
 
 class DepthmapX(NamedTuple):

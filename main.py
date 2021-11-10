@@ -1,10 +1,11 @@
-from uuid import uuid4
-from .depthmap import analyse
-from .download import download
-from .convert import osm_to_dxf
-import sys
 import asyncio
+import sys
 from time import time
+from uuid import uuid4
+
+from convert import osm_to_dxf
+from depthmap import analyse
+from download import download
 
 
 async def process(place: str) -> None:
