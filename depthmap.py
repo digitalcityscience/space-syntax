@@ -1,6 +1,6 @@
 import asyncio
 import sys
-from os import chmod, path
+from os import chmod, path, getcwd
 from typing import NamedTuple
 from urllib.request import urlretrieve
 
