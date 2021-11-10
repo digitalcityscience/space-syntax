@@ -3,7 +3,11 @@
 
 import sys
 import asyncio
-from function import handler
+from main import process
+
+async def handle(req: str):
+    print("handle: ", req)
+    return await process(req)
 
 def get_stdin():
     buf = ""
@@ -16,7 +20,8 @@ def get_stdin():
 
 if(__name__ == "__main__"):
     st = get_stdin()
+    print("stdin: ", st)
     loop = asyncio.get_event_loop()
-    ret = loop.run_until_complete(handler.handle(st))    
+    ret = loop.run_until_complete(handle(st))    
     if ret !=None:
         print(ret)

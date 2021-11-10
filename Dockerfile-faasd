@@ -1,0 +1,45 @@
+FROM openfaas/of-watchdog:0.8.2 as watchdog
+FROM ghcr.io/digitalcityscience/space-syntax:latest
+
+USER root
+COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
+RUN chmod +x /usr/bin/fwatchdog
+
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+# Allows you to add additional packages via build-arg
+ARG ADDITIONAL_PACKAGE
+
+COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
+RUN chmod +x /usr/bin/fwatchdog
+RUN apt-get update \
+    && apt-get install -y ca-certificates wget ${ADDITIONAL_PACKAGE} \
+    && rm -rf /var/lib/apt/lists/
+
+USER app
+
+RUN touch __init__.py
+ENV PATH=$PATH:/home/app/.local/bin
+
+WORKDIR /home/app/
+
+COPY index-faasd.py           .
+COPY *.py /home/app/
+#COPY requirements-faasd.txt   .
+
+USER root
+#RUN pip install -r requirements-faasd.txt
+RUN chown -R app:app /home/app/
+#configure healthcheck
+USER app
+
+ENV fprocess="python -m index-faasd"
+ENV mode="streaming"
+ENV exec_timeout=1200
+EXPOSE 8080
+
+HEALTHCHECK --interval=5s CMD [ -e /tmp/.lock ] || exit 1
+
+ENTRYPOINT ["fwatchdog"]

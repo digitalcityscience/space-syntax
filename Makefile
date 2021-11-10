@@ -1,4 +1,5 @@
 TAG=ghcr.io/digitalcityscience/space-syntax
+FAASD_TAG=${TAG}-faasd
 
 help:
 	@echo "for now, you are on your own"
@@ -10,11 +11,11 @@ init:
 build:
 	pip install -r requirements.txt
 
-build-docker:
-	docker build --network=host -t ${TAG}:latest .
+docker:
+	docker build . --network=host --tag ${TAG}:latest
 
-build-docker-faasd:
-	docker build  --no-cache --network=host -t digitalcityscience/space-syntax -f faasd/Dockerfile .
+docker-faasd:
+	docker build . --tag ${FAASD_TAG} --file Dockerfile-faasd
 
 rebuild-docker:
 	docker build --network=host -t ${TAG}:latest .
@@ -25,6 +26,9 @@ run:
 run-docker: 
 	docker run --rm -v "${PWD}"/workdir:/home/app/downloads ${TAG}
 
+run-faasd-docker:
+	docker run --rm -p 8080:8080 ${FAASD_TAG}
 clean:
 	rm -rf downloads/
+
 

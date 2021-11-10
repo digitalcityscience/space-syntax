@@ -3,8 +3,8 @@ provider:
   name: openfaas
   gateway: http://192.168.64.2:8080
 functions:
-  tester:
+  space-syntax-faasd:
     lang: Dockerfile
-    handler: ./faasd
+    build: false
     image: ghcr.io/digitalcityscience/space-syntax-faasd:latest
 
