@@ -26,7 +26,7 @@ RUN cd depthmapX-${version}/depthmapX-master && \
   mkdir build && \
   cd build && \
   cmake .. && \
-  make -j depthmapXcli && \
+  make -j2 depthmapXcli && \
   cp depthmapXcli/depthmapXcli /usr/local/bin/
 
 FROM python:3.9-slim-bullseye
@@ -35,17 +35,19 @@ LABEL org.opencontainers.image.source https://github.com/digitalcityscience/spac
 
 RUN apt update
 
+COPY --from=depthmapX-builder \
+  /usr/local/bin/depthmapXcli \
+  /usr/local/bin/depthmapXcli
+RUN chmod +x /usr/local/bin/depthmapXcli
+
 RUN useradd --create-home --shell /bin/bash app
 WORKDIR /home/app
+RUN chown -R app:app /home/app
 USER app
 
 COPY requirements.txt /home/app
 RUN pip install -r requirements.txt
 COPY *.py /home/app/
 
-RUN mkdir /home/app/downloads
-COPY --from=depthmapX-builder \
-  /usr/local/bin/depthmapXcli \
-  /home/app/downloads/depthmapX
 
 ENTRYPOINT [ "python","-m","main" ]

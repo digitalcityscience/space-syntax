@@ -5,6 +5,7 @@ from typing import NamedTuple
 from urllib.request import urlretrieve
 
 from convert import mif_to_shp
+import shutil
 
 
 class DepthmapX(NamedTuple):
@@ -12,8 +13,10 @@ class DepthmapX(NamedTuple):
 
 
 def depthmapx_factory() -> DepthmapX:
-    executable = "downloads/depthmapX"
-    if path.isfile(executable) is False:
+    executable = "depthmapXcli"
+    if shutil.which(executable) is None:
+        print("No depthmapXcli executable found, commencing download.")
+        executable = path.join(getcwd(), "depthmapXcli")
         if sys.platform == "darwin":
             urlretrieve(
                 "https://github.com/SpaceGroupUCL/depthmapX/releases/download/v0.8.0/depthmapXcli_macos",
@@ -26,7 +29,8 @@ def depthmapx_factory() -> DepthmapX:
             )
         else:
             raise NotImplementedError()
-    chmod(executable, 0o775)
+        chmod(executable, 0o775)
+        
     return DepthmapX(executable)
 
 

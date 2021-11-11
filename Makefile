@@ -10,7 +10,7 @@ init:
 build:
 	pip install -r requirements.txt
 
-build-docker:
+docker:
 	docker build --network=host -t ${TAG}:latest .
 
 rebuild-docker:
@@ -21,6 +21,9 @@ run:
 
 run-docker: 
 	docker run --rm -v "${PWD}"/workdir:/home/app/downloads ${TAG}
+
+debug-docker:
+	docker run --network=host --rm -v "${PWD}"/workdir:/home/app/downloads -it --entrypoint /bin/bash  ${TAG}
 
 clean:
 	rm -rf downloads/
