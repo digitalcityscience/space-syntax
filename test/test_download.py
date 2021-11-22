@@ -13,7 +13,5 @@ def test_download_administrative_geojson():
     with open(fixture_file, "r") as file:
         fixture = json.load(file)
         result = download_administrative_geojson("Balchik, Bulgaria")
-        print("Fixture", fixture)
-        print("Result", result)
         assert result == fixture 
 
