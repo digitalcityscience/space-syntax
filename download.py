@@ -1,7 +1,7 @@
 import json
-from matplotlib.font_manager import json_load
-from osmnx import settings, config, graph, io, geocode_to_gdf, project_gdf
+from osmnx import settings, config, graph, io, geocode_to_gdf
 import uuid
+from typing import Any
 
 utn = settings.useful_tags_node
 oxna = settings.osm_xml_node_attrs
@@ -16,13 +16,17 @@ config(all_oneway=True, useful_tags_node=utn, useful_tags_way=utw)
 
 def download(place: str, operation_id=uuid.uuid4(), workdir="./downloads") -> str:
     print(f"Downloading map for: {place} ...")
-    output_file = f"{workdir}/{operation_id}/osm"
-    gph = graph.graph_from_place(place, network_type="drive")
-    io.save_graph_shapefile(gph, filepath=output_file)
+    output_file = f"{workdir}/{operation_id}/osm.shp"
+    io.save_graph_shapefile(
+        download_drive_graph_from_place(place), filepath=output_file
+    )
     with open(f"{workdir}/{operation_id}/administrative.geojson", "w") as fp:
         json.dump(download_administrative_geojson(place), fp)
     return output_file
 
+
+def download_drive_graph_from_place(place: str) -> Any:
+    return graph.graph_from_place(place, network_type="drive")
 
 def download_administrative_geojson(place: str) -> str:
     city = geocode_to_gdf(place)
