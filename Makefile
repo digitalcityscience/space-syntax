@@ -8,7 +8,10 @@ init:
 	source .venv/bin/activate 
 
 build:
-	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
+
+test: test/*.py
+	python -m pytest -ra
 
 docker:
 	docker build --network=host -t ${TAG}:latest .
