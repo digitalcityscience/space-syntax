@@ -1,6 +1,6 @@
 #!/bin/bash
 TAG=ghcr.io/digitalcityscience/space-syntax
-COMMAND="docker run --rm -v "${PWD}"/workdir:/home/app/downloads ${TAG}"
+COMMAND="docker run --network=host --rm -v "${PWD}"/workdir:/home/app/downloads ${TAG}"
 
 while IFS= read -r line; do
   echo "Downloading: $line"
