@@ -7,7 +7,7 @@ init:
 	python3 -m venv --prompt space-syntax .venv
 	source .venv/bin/activate 
 
-install: init
+install:
 	pip install -r requirements-dev.txt
 
 test: test/*.py
