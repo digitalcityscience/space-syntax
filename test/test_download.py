@@ -15,6 +15,9 @@ def test_download_administrative_geojson():
     with open(fixture_file, "r") as file:
         fixture = json.load(file)
         result = download_administrative_geojson("Balchik, Bulgaria")
+        # place_id seems to differ from time to time
+        result["features"][0]["properties"]["place_id"] = "XXX"
+        fixture["features"][0]["properties"]["place_id"] = "XXX"
         assert result == fixture
 
 

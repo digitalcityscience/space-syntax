@@ -28,6 +28,6 @@ def download(place: str, operation_id=uuid.uuid4(), workdir="./downloads") -> st
 def download_drive_graph_from_place(place: str) -> Any:
     return graph.graph_from_place(place, network_type="drive")
 
-def download_administrative_geojson(place: str) -> str:
+def download_administrative_geojson(place: str) -> Any:
     city = geocode_to_gdf(place)
     return json.loads(city.to_json())
