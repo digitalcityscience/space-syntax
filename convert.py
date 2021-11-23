@@ -2,8 +2,12 @@ import geopandas as gpd
 from os import path
 
 
-def osm_to_dxf(file_name: str) -> str:
-    base_file, _ = path.splitext(file_name)
+def osm_to_dxf(file_name: str, destination=None) -> str:
+    if destination is None:
+        base_file, _ = path.splitext(file_name)
+    else:
+        _, original_file_name = path.split(file_name)
+        base_file = path.join(destination, original_file_name)
     dxf_file = base_file + ".dxf"
     print(f"Converting {file_name} to {dxf_file}")
     data = gpd.read_file(file_name)
