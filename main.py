@@ -13,8 +13,7 @@ async def process(place: str) -> None:
     operation_id = uuid4().hex[:8] + "-" + place.split(",")[0]
     print(f"Starting operation {operation_id}")
     map = download(place, operation_id)
-    # if the file is not specified linux defaults to nodes.shp
-    dxf = osm_to_dxf(map+"/edges.shp")
+    dxf = osm_to_dxf(map)
     axial_analysis, segment_analysis = await analyse(dxf)
     print("Exported axial files: ", axial_analysis)
     print("Exported segment files: ", segment_analysis)

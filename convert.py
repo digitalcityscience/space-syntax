@@ -11,10 +11,11 @@ def construct_destination_filepath(origin_file: str, destination_path=None) -> s
     return base_file
 
 
-def osm_to_dxf(file_name: str, destination=None) -> str:
-    dxf_file = construct_destination_filepath(file_name, destination) + ".dxf"
-    print(f"Converting {file_name} to {dxf_file}")
-    data = gpd.read_file(file_name)
+def osm_to_dxf(osm_folder: str, destination=None) -> str:
+    dxf_file = construct_destination_filepath(osm_folder, destination) + ".dxf"
+    print(f"Converting {osm_folder} to {dxf_file}")
+    # if the file is not specified linux defaults to nodes.shp
+    data = gpd.read_file(path.join(osm_folder, "edges.shp"))
     data.geometry.to_file(dxf_file, driver="DXF")
     return dxf_file
 
