@@ -4,6 +4,8 @@ import uuid
 from typing import Any
 from pathlib import Path
 
+from logger import default_logger
+
 utn = settings.useful_tags_node
 oxna = settings.osm_xml_node_attrs
 oxnt = settings.osm_xml_node_tags
@@ -14,13 +16,15 @@ utn = list(set(utn + oxna + oxnt))
 utw = list(set(utw + oxwa + oxwt))
 config(all_oneway=True, useful_tags_node=utn, useful_tags_way=utw)
 
+log = default_logger()
+
 def create_workdir(workdir="./downloads") -> Path:
     path = Path(workdir)
-    path.mkdir()
+    path.mkdir(exist_ok=True)
     return path
 
 def download(place: str, operation_id=uuid.uuid4(), workdir="./downloads") -> str:
-    print(f"Downloading map for: {place} ...")
+    log.info(f"Downloading map for: {place} ...")
     output_file = f"{workdir}/{operation_id}/osm.shp"
     io.save_graph_shapefile(
         download_drive_graph_from_place(place), filepath=output_file
