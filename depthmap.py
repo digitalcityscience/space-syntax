@@ -3,9 +3,11 @@ import sys
 from os import chmod, path, getcwd
 from typing import NamedTuple
 from urllib.request import urlretrieve
-
+from logger import default_logger
 from convert import mif_to_shp
 import shutil
+
+log = default_logger()
 
 
 class DepthmapX(NamedTuple):
@@ -15,7 +17,7 @@ class DepthmapX(NamedTuple):
 def depthmapx_factory() -> DepthmapX:
     executable = "depthmapXcli"
     if shutil.which(executable) is None:
-        print("No depthmapXcli executable found, commencing download.")
+        log.info("No depthmapXcli executable found, commencing download.")
         executable = path.join(getcwd(), "depthmapXcli")
         if sys.platform == "darwin":
             urlretrieve(
@@ -30,23 +32,23 @@ def depthmapx_factory() -> DepthmapX:
         else:
             raise NotImplementedError()
         chmod(executable, 0o775)
-        
+
     return DepthmapX(executable)
 
 
 async def run(cmd: str, description="Running command"):
-    print(description, cmd)
+    log.info(description, cmd)
     proc = await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
 
     stdout, stderr = await proc.communicate()
 
-    print(f"[{cmd!r} exited with {proc.returncode}]")
+    log.info(f"[{cmd!r} exited with {proc.returncode}]")
     if stdout:
-        print(f"[stdout]\n{stdout.decode()}")
+        log.info(f"[stdout]\n{stdout.decode()}")
     if stderr:
-        print(f"[stderr]\n{stderr.decode()}")
+        log.error(f"[stderr]\n{stderr.decode()}")
 
 
 async def axial(graph_file: str, depthmapx: DepthmapX):
@@ -71,7 +73,7 @@ async def axial(graph_file: str, depthmapx: DepthmapX):
 
 async def segment(graph_file: str, depthmapx: DepthmapX):
     base_file, _ = path.splitext(graph_file)
-    print("This operation may take longer than 25 minutes to complete!!!")
+    log.info("This operation may take longer than 25 minutes to complete!!!")
     segment_map_file = f"{base_file}-segment-map.graph"
     await run(
         f"{depthmapx.executable} -m MAPCONVERT -f {graph_file} -o {segment_map_file} -p -co segment -con segmentMap",

@@ -1,6 +1,8 @@
 import geopandas as gpd
 from os import path
+from logger import default_logger
 
+log = default_logger()
 
 def construct_destination_filepath(origin_file: str, destination_path=None) -> str:
     if destination_path is None:
@@ -13,7 +15,7 @@ def construct_destination_filepath(origin_file: str, destination_path=None) -> s
 
 def osm_to_dxf(osm_folder: str, destination=None) -> str:
     dxf_file = construct_destination_filepath(osm_folder, destination) + ".dxf"
-    print(f"Converting {osm_folder} to {dxf_file}")
+    log.info(f"Converting {osm_folder} to {dxf_file}")
     # if the file is not specified linux defaults to nodes.shp
     data = gpd.read_file(path.join(osm_folder, "edges.shp"))
     data.geometry.to_file(dxf_file, driver="DXF")
