@@ -8,7 +8,7 @@ Based on:
   - [geopandas](https://geopandas.org) for conversion
   - [depthmapX](https://www.ucl.ac.uk/bartlett/architecture/research/space-syntax/depthmapx) for spatial analysis
 
-Algorithm pseudocode:
+### Algorithm pseudocode:
 1. download map from OSM as an ESRI shapefile
 1. convert the ESRI shapefile to DXF
 1. transform DXF to a shape file GRAPH
@@ -22,3 +22,7 @@ Algorithm pseudocode:
     1. exporting segment analysis to MIF
     1. transform the MIF to SHAPE
     1. transform the MIF to GeoJSON
+
+
+### License
+[GNU General Public License v3.0](./LICENSE)
