@@ -6,8 +6,7 @@ from uuid import uuid4
 from convert import osm_to_dxf
 from depthmap import analyse
 from download import download, create_workdir
-from logger import configure_logger
-
+from logger import configure_logger, default_logger
 
 async def process(place: str) -> None:
     start = time()
@@ -30,3 +29,5 @@ if __name__ == "__main__":
         loop.run_until_complete(process(place))
     except IndexError:
         print("No place given! Please provide a place in the format: 'City, Country'")
+    except Exception:
+        default_logger().exception("Error processing place.")

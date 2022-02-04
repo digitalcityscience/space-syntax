@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+LOGGER_NAME = "space-syntax"
 
 def configure_logger(workdir: Path = Path.cwd()) -> logging.Logger:
     logger = default_logger()
@@ -21,4 +22,4 @@ def configure_logger(workdir: Path = Path.cwd()) -> logging.Logger:
 
 
 def default_logger() -> logging.Logger:
-    return logging.getLogger(__name__)
+    return logging.getLogger(LOGGER_NAME)
