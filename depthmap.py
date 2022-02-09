@@ -37,7 +37,7 @@ def depthmapx_factory() -> DepthmapX:
 
 
 async def run(cmd: str, description="Running command"):
-    log.info(description, cmd)
+    log.info(f"running:{cmd} because:{description}")
     proc = await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
