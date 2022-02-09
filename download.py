@@ -20,7 +20,7 @@ log = default_logger()
 
 def create_workdir(workdir="./downloads") -> Path:
     path = Path(workdir)
-    path.mkdir(exist_ok=True)
+    path.mkdir(exist_ok=True, parents=True)
     return path
 
 def download(place: str, operation_id=uuid.uuid4(), workdir="./downloads") -> str:
