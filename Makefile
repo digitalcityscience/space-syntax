@@ -10,6 +10,10 @@ init:
 install:
 	pip install -r requirements-dev.txt
 
+install-mac:
+	brew install gdal proj geos --force
+	install
+
 test: test/*.py
 	python -m pytest -ra
 
