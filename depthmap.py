@@ -1,11 +1,13 @@
 import asyncio
+import shutil
 import sys
-from os import chmod, path, getcwd
+from os import chmod, getcwd, path
+from time import time
 from typing import NamedTuple
 from urllib.request import urlretrieve
-from logger import default_logger
+
 from convert import mif_to_shp
-import shutil
+from logger import default_logger
 
 log = default_logger()
 
@@ -37,6 +39,7 @@ def depthmapx_factory() -> DepthmapX:
 
 
 async def run(cmd: str, description="Running command"):
+    start = time()
     log.info(f"running: {cmd} because: {description}")
     proc = await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
@@ -44,13 +47,16 @@ async def run(cmd: str, description="Running command"):
 
     if proc.stdout:
         async for logLine in proc.stdout:
-            log.info(f"{description} [stdout] -> {logLine.decode().rstrip()!s}")    
-            
+            log.info(f"{description} [stdout] -> {logLine.decode().rstrip()!s}")
+
     if proc.stderr:
         async for logLine in proc.stderr:
             log.warn(f"{description} [stderr] -> {logLine.decode().rstrip()!s}")
 
-    log.info(f"[{cmd!r} exited with {proc.returncode}]")
+    log.info(
+        f"[{cmd!r} exited with {proc.returncode}] and took {time() - start} seconds"
+    )
+
 
 async def axial(graph_file: str, depthmapx: DepthmapX):
     base_file, _ = path.splitext(graph_file)
