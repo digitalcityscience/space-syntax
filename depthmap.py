@@ -37,19 +37,20 @@ def depthmapx_factory() -> DepthmapX:
 
 
 async def run(cmd: str, description="Running command"):
-    log.info(f"running:{cmd} because:{description}")
+    log.info(f"running: {cmd} because: {description}")
     proc = await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
 
-    stdout, stderr = await proc.communicate()
+    if proc.stdout:
+        async for logLine in proc.stdout:
+            log.info(f"{description} [stdout] -> {logLine.decode().rstrip()!s}")    
+            
+    if proc.stderr:
+        async for logLine in proc.stderr:
+            log.warn(f"{description} [stderr] -> {logLine.decode().rstrip()!s}")
 
     log.info(f"[{cmd!r} exited with {proc.returncode}]")
-    if stdout:
-        log.info(f"[stdout]\n{stdout.decode()}")
-    if stderr:
-        log.error(f"[stderr]\n{stderr.decode()}")
-
 
 async def axial(graph_file: str, depthmapx: DepthmapX):
     base_file, _ = path.splitext(graph_file)

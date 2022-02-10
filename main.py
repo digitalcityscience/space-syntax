@@ -10,7 +10,7 @@ from logger import configure_logger, default_logger
 
 async def process(place: str) -> None:
     start = time()
-    operation_id = uuid4().hex[:8] + "-" + place.split(",")[0]
+    operation_id = place.split(",")[0] + "-" + uuid4().hex[:8]
     workdir = create_workdir(f"./downloads/{operation_id}")
     log = configure_logger(workdir)
     log.info(f"Starting operation {operation_id}")
@@ -19,7 +19,7 @@ async def process(place: str) -> None:
     axial_analysis, segment_analysis = await analyse(dxf)
     log.info("Exported axial files: ", axial_analysis)
     log.info("Exported segment files: ", segment_analysis)
-    log.info(f"Operation took {time() - start} seconds")
+    log.info(f"Operation {operation_id} took {time() - start} seconds")
 
 
 if __name__ == "__main__":
