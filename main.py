@@ -1,13 +1,14 @@
 import asyncio
 import sys
 from time import time
-
+import datetime
 from convert import osm_to_dxf
 from depthmap import analyse
 from download import download
 from logger import default_logger
 import config
 import utils
+
 
 async def process(cfg: config.Configuration) -> None:
     start = time()
@@ -18,9 +19,10 @@ async def process(cfg: config.Configuration) -> None:
     axial_analysis, segment_analysis = await analyse(dxf)
     cfg.log.info("Exported axial files: ", axial_analysis)
     cfg.log.info("Exported segment files: ", segment_analysis)
-    cfg.log.info(f"Operation {cfg.operation_id} took {time() - start} seconds")
+    cfg.log.info(
+        f"Operation {cfg.operation_id} took {datetime.timedelta(seconds=(time() - start))}"
+    )
     utils.create_status_file(cfg.workdir, utils.Status.FINISHED)
-
 
 
 if __name__ == "__main__":
