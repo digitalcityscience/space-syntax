@@ -4,7 +4,10 @@ from logger import default_logger
 
 log = default_logger()
 
-def construct_destination_filepath(origin_file: str, destination_path=None) -> str:
+
+def construct_destination_filepath(
+    origin_file: str, destination_path: str = None
+) -> str:
     if destination_path is None:
         base_file, _ = path.splitext(origin_file)
     else:
@@ -22,7 +25,7 @@ def osm_to_dxf(osm_folder: str, destination=None) -> str:
     return dxf_file
 
 
-def mif_to_shp(input: str, destination=None) -> dict[str, str]:
+def mif_to_shp(input: str, destination: str = None) -> dict[str, str]:
     data = gpd.read_file(input)
     base_file = construct_destination_filepath(input, destination)
     outputs = {"shape": f"{base_file}.shp", "geojson": f"{base_file}.geojson"}

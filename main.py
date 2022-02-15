@@ -1,33 +1,38 @@
 import asyncio
 import sys
 from time import time
-from uuid import uuid4
 
 from convert import osm_to_dxf
 from depthmap import analyse
-from download import download, create_workdir
-from logger import configure_logger, default_logger
+from download import download
+from logger import default_logger
+import config
+import utils
 
-async def process(place: str) -> None:
+async def process(cfg: config.Configuration) -> None:
     start = time()
-    operation_id = place.split(",")[0] + "-" + uuid4().hex[:8]
-    workdir = create_workdir(f"./downloads/{operation_id}")
-    log = configure_logger(workdir)
-    log.info(f"Starting operation {operation_id}")
-    map = download(place, operation_id, workdir)
+    utils.create_status_file(cfg.workdir, utils.Status.WORKING)
+    cfg.log.info(f"Starting operation {cfg.operation_id}")
+    map = download(place, cfg.operation_id, cfg.workdir)
     dxf = osm_to_dxf(map)
     axial_analysis, segment_analysis = await analyse(dxf)
-    log.info("Exported axial files: ", axial_analysis)
-    log.info("Exported segment files: ", segment_analysis)
-    log.info(f"Operation {operation_id} took {time() - start} seconds")
+    cfg.log.info("Exported axial files: ", axial_analysis)
+    cfg.log.info("Exported segment files: ", segment_analysis)
+    cfg.log.info(f"Operation {cfg.operation_id} took {time() - start} seconds")
+    utils.create_status_file(cfg.workdir, utils.Status.FINISHED)
+
 
 
 if __name__ == "__main__":
+    cfg = None
     try:
         place = sys.argv[1]
+        cfg = config.configure(place)
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(process(place))
+        loop.run_until_complete(process(cfg))
     except IndexError:
         print("No place given! Please provide a place in the format: 'City, Country'")
     except Exception:
+        if cfg is not None:
+            utils.create_status_file(cfg.workdir, utils.Status.ERROR)
         default_logger().exception("Error processing place.")
