@@ -47,11 +47,11 @@ async def run(cmd: str, description="Running command"):
 
     if proc.stdout:
         async for logLine in proc.stdout:
-            log.info(f"{description} [stdout] -> {logLine.decode().rstrip()!s}")
+            log.info(f"{description} -> {logLine.decode().rstrip()!s}")
 
     if proc.stderr:
         async for logLine in proc.stderr:
-            log.warn(f"{description} [stderr] -> {logLine.decode().rstrip()!s}")
+            log.warn(f"{description} -> {logLine.decode().rstrip()!s}")
 
     log.info(
         f"[{cmd!r} exited with {proc.returncode}] and took {time() - start} seconds"
