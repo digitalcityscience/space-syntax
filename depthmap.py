@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import shutil
 import sys
 from os import chmod, getcwd, path
@@ -54,7 +55,7 @@ async def run(cmd: str, description="Running command"):
             log.warn(f"{description} -> {logLine.decode().rstrip()!s}")
 
     log.info(
-        f"[{cmd!r} exited with {proc.returncode}] and took {time() - start} seconds"
+        f"[{cmd!r} exited with {proc.returncode}] and took {datetime.timedelta(seconds=(time() - start))}¬"
     )
 
 
