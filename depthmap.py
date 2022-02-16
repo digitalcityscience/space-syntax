@@ -88,7 +88,7 @@ async def segment(graph_file: str, depthmapx: DepthmapX):
     )
     segment_analysis_file = f"{base_file}-segment-analysis.graph"
     await run(
-        f"{depthmapx.executable} -m SEGMENT -f {segment_map_file} -o {segment_analysis_file} -p  -st tulip -sic -srt metric -stb 1024 -sr 200,400,1600,n",
+        f"{depthmapx.executable} -m SEGMENT -f {segment_map_file} -o {segment_analysis_file} -p  -st tulip -sic -srt metric -stb 1024 -sr 300,1000,n",
         "Performing segment analysis",
     )
     segment_shapefile_mif = f"{base_file}.segment.mif"
