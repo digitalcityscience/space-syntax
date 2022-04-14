@@ -2,7 +2,8 @@
 FROM debian:bullseye-slim AS depthmapX-builder
 WORKDIR /work
 ARG version=0.8.0
-ARG url="https://github.com/SpaceGroupUCL/depthmapX/archive/refs/heads/master.zip"
+ARG branch=vga_parallel
+ARG url="https://github.com/pklampros/depthmapX/archive/refs/heads/vga_parallel.zip"
 ARG tarball="v${version}.zip"
 
 RUN apt update && apt install -y \
@@ -16,24 +17,25 @@ RUN apt update && apt install -y \
   make \
   musl-dev \
   qtbase5-dev \
+  libgomp1 \
   wget
 
 RUN wget ${url} -O ${tarball} && \
   unzip ${tarball} -d depthmapX-${version}
 
 
-RUN cd depthmapX-${version}/depthmapX-master && \
+RUN cd depthmapX-${version}/depthmapX-${branch} && \
   mkdir build && \
   cd build && \
   cmake .. && \
-  make -j2 depthmapXcli && \
+  make -j4 depthmapXcli && \
   cp depthmapXcli/depthmapXcli /usr/local/bin/
 
 FROM python:3.9-slim-bullseye
 
 LABEL org.opencontainers.image.source https://github.com/digitalcityscience/space-syntax
 
-RUN apt update
+RUN apt update && apt install -y libgomp1
 
 COPY --from=depthmapX-builder \
   /usr/local/bin/depthmapXcli \
