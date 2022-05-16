@@ -2,7 +2,12 @@ import json
 import os
 from pathlib import Path
 
-from download import download_administrative_geojson, download_drive_graph_from_place, create_workdir
+from download import (
+    create_workdir,
+    download_administrative_geojson,
+    download_drive_graph_from_place,
+)
+
 
 def test_create_workdir_default():
     test_dir = create_workdir()
@@ -10,11 +15,13 @@ def test_create_workdir_default():
     assert test_dir.is_dir()
     assert test_dir.stem == "downloads"
 
+
 def test_create_workdir_new(tmpdir):
     test_dir = create_workdir(Path(tmpdir).joinpath("downloads"))
     assert test_dir.exists()
     assert test_dir.is_dir()
-    assert test_dir.stem == "downloads"    
+    assert test_dir.stem == "downloads"
+
 
 def test_download_administrative_geojson():
     fixture_file = os.path.join(
@@ -34,5 +41,5 @@ def test_download_administrative_geojson():
 
 def test_download_drive_graph_from_place():
     result = download_drive_graph_from_place("Balchik, Bulgaria")
-    assert result.number_of_nodes() >= 1766
-    assert result.number_of_edges() >= 2432
+    assert result.number_of_nodes() >= 1758
+    assert result.number_of_edges() >= 2424
