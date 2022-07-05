@@ -14,7 +14,11 @@ async def process(cfg: config.Configuration) -> None:
     start = time()
     utils.create_status_file(cfg.workdir, utils.Status.WORKING)
     cfg.log.info(f"Starting operation {cfg.operation_id}")
+    cfg.log.info("Downloading osm files...")
     map = download(place, cfg.operation_id, cfg.workdir)
+    cfg.log.info(
+        f"Downloading osm files took {datetime.timedelta(seconds=(time() - start))}"
+    )
     dxf = osm_to_dxf(map)
     axial_analysis, segment_analysis = await analyse(dxf)
     cfg.log.info("Exported axial files: ", axial_analysis)
