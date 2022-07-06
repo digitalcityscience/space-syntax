@@ -12,6 +12,7 @@ install:
 
 install-mac:
 	brew install gdal proj geos --force
+	export DYLD_LIBRARY_PATH=/opt/homebrew/opt/geos/lib/
 	install
 
 test: test/*.py

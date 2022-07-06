@@ -7,6 +7,11 @@ from time import time
 from typing import NamedTuple
 from urllib.request import urlretrieve
 
+from config import (
+    AnalysisConfiguration,
+    AxialAnalysisConfiguration,
+    SegmentAnalysisConfiguration,
+)
 from convert import mif_to_shp
 from logger import default_logger
 
@@ -59,7 +64,9 @@ async def run(cmd: str, description="Running command"):
     )
 
 
-async def axial(graph_file: str, depthmapx: DepthmapX):
+async def axial(
+    graph_file: str, depthmapx: DepthmapX, config: AxialAnalysisConfiguration
+):
     base_file, _ = path.splitext(graph_file)
     axial_map_file = f"{base_file}-axial-map.graph"
     await run(
@@ -68,7 +75,7 @@ async def axial(graph_file: str, depthmapx: DepthmapX):
     )
     axial_analysis_file = f"{base_file}-axial-analysis.graph"
     await run(
-        f"{depthmapx.executable} -m AXIAL -f {axial_map_file} -o {axial_analysis_file} -p -xa 3,n",
+        f"{depthmapx.executable} -m AXIAL -f {axial_map_file} -o {axial_analysis_file} -p -xa {','.join(str(radius) for radius in config.radii)}",
         "Performing axial analysis",
     )
     axial_shapefile_mif = f"{base_file}.axial.mif"
@@ -79,7 +86,9 @@ async def axial(graph_file: str, depthmapx: DepthmapX):
     return mif_to_shp(axial_shapefile_mif)
 
 
-async def segment(graph_file: str, depthmapx: DepthmapX):
+async def segment(
+    graph_file: str, depthmapx: DepthmapX, config: SegmentAnalysisConfiguration
+):
     base_file, _ = path.splitext(graph_file)
     log.info("This operation may take longer than 25 minutes to complete!!!")
     segment_map_file = f"{base_file}-segment-map.graph"
@@ -89,7 +98,7 @@ async def segment(graph_file: str, depthmapx: DepthmapX):
     )
     segment_analysis_file = f"{base_file}-segment-analysis.graph"
     await run(
-        f"{depthmapx.executable} -m SEGMENT -f {segment_map_file} -o {segment_analysis_file} -p  -st tulip -sic -srt metric -stb 1024 -sr 300,1000,n",
+        f"{depthmapx.executable} -m SEGMENT -f {segment_map_file} -o {segment_analysis_file} -p  -st {config.type.value} -srt {config.radius_type.value} -stb {config.tulip_bins} -sr {','.join(str(radius) for radius in config.radii)}",
         "Performing segment analysis",
     )
     segment_shapefile_mif = f"{base_file}.segment.mif"
@@ -100,7 +109,7 @@ async def segment(graph_file: str, depthmapx: DepthmapX):
     return mif_to_shp(segment_shapefile_mif)
 
 
-async def analyse(dxfFile: str):
+async def analyse(dxfFile: str, analysis_config: AnalysisConfiguration):
     base_file, _ = path.splitext(dxfFile)
     graph_file = base_file + ".graph"
     depthmapx = depthmapx_factory()
@@ -114,5 +123,6 @@ async def analyse(dxfFile: str):
         "Transform dxf to shape file",
     )
     return await asyncio.gather(
-        axial(graph_file, depthmapx), segment(graph_file, depthmapx)
+        axial(graph_file, depthmapx, analysis_config.axial),
+        segment(graph_file, depthmapx, analysis_config.segment),
     )

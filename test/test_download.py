@@ -1,26 +1,7 @@
 import json
 import os
-from pathlib import Path
 
-from download import (
-    create_workdir,
-    download_administrative_geojson,
-    download_drive_graph_from_place,
-)
-
-
-def test_create_workdir_default():
-    test_dir = create_workdir()
-    assert test_dir.exists()
-    assert test_dir.is_dir()
-    assert test_dir.stem == "downloads"
-
-
-def test_create_workdir_new(tmpdir):
-    test_dir = create_workdir(Path(tmpdir).joinpath("downloads"))
-    assert test_dir.exists()
-    assert test_dir.is_dir()
-    assert test_dir.stem == "downloads"
+from download import download_administrative_geojson, download_drive_graph_from_place
 
 
 def test_download_administrative_geojson():

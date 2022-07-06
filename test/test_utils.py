@@ -1,7 +1,20 @@
 import os
 import pathlib
 import py
-from utils import Status, create_status_file
+from utils import Status, create_status_file, create_workdir
+
+def test_create_workdir_default():
+    test_dir = create_workdir()
+    assert test_dir.exists()
+    assert test_dir.is_dir()
+    assert test_dir.stem == "downloads"
+
+
+def test_create_workdir_new(tmpdir):
+    test_dir = create_workdir(pathlib.Path(tmpdir).joinpath("downloads"))  # type: ignore
+    assert test_dir.exists()
+    assert test_dir.is_dir()
+    assert test_dir.stem == "downloads"
 
 
 def check_status_file_exists(tmpdir: py.path.local, status: Status):

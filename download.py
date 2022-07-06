@@ -19,11 +19,6 @@ config(all_oneway=True, useful_tags_node=utn, useful_tags_way=utw)
 log = default_logger()
 
 
-def create_workdir(workdir: str = "./downloads") -> Path:
-    path = Path(workdir)
-    path.mkdir(exist_ok=True, parents=True)
-    return path
-
 
 def download(place: str, operation_id=uuid.uuid4(), workdir="./downloads") -> str:
     log.info(f"Downloading map for: {place} ...")
